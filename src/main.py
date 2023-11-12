@@ -1,12 +1,10 @@
-# Example file showing a circle moving on screen
 import pygame as pg
-import random as rd
 
 from objects.racer import Racer
 from objects.track import Track
 
 
-# Constants
+# constants
 SURFACE_COLOR = "black"
 WIDTH = 800
 HEIGHT = 800
@@ -32,49 +30,73 @@ TRACK_TURN_SW = pg.image.load("assets/images/track-turn-002.png").convert_alpha(
 TRACK_TURN_NW = pg.image.load("assets/images/track-turn-003.png").convert_alpha()
 TRACK_TURN_NE = pg.image.load("assets/images/track-turn-004.png").convert_alpha()
 
-# setup sprites
+# setup track sprites
 track = pg.sprite.Group()
 racers = pg.sprite.Group()
 track1 = (
-    (TRACK_TURN_SE, (80, 80)),
-    (TRACK_HORIZONTAL, (240, 80)),
-    (TRACK_TURN_SW, (400, 80)),
-    (TRACK_BACKGROUND, (560, 80)),
-    (TRACK_BACKGROUND, (720, 80)),
+    # row 1
+    (TRACK_TURN_SE,      (80,  80)),
+    (TRACK_HORIZONTAL,   (240, 80)),
+    (TRACK_TURN_SW,      (400, 80)),
+    (TRACK_BACKGROUND,   (560, 80)),
+    (TRACK_BACKGROUND,   (720, 80)),
+    # row 2
+    (TRACK_VERTICAL,     (80,  240)),
+    (TRACK_BACKGROUND,   (240, 240)),
+    (TRACK_VERTICAL,     (400, 240)),
+    (TRACK_BACKGROUND,   (560, 240)),
+    (TRACK_BACKGROUND,   (720, 240)),
+    # row 3
+    (TRACK_TURN_NE,      (80,  400)),
+    (TRACK_HORIZONTAL,   (240, 400)),
+    (TRACK_INTERSECTION, (400, 400)),
+    (TRACK_HORIZONTAL,   (560, 400)),
+    (TRACK_TURN_SW,      (720, 400)),
+    # row 4
+    (TRACK_BACKGROUND,   (80,  560)),
+    (TRACK_BACKGROUND,   (240, 560)),
+    (TRACK_VERTICAL,     (400, 560)),
+    (TRACK_BACKGROUND,   (560, 560)),
+    (TRACK_VERTICAL,     (720, 560)),
+    # row 5
+    (TRACK_BACKGROUND,   (80,  720)),
+    (TRACK_BACKGROUND,   (240, 720)),
+    (TRACK_TURN_NE,      (400, 720)),
+    (TRACK_HORIZONTAL,   (560, 720)),
+    (TRACK_TURN_NW,      (720, 720)),
 )
 for tile in track1:
     new_tile = Track(tile[0], tile[1])
     track.add(new_tile)
+
+# setup racer sprites
 racer = Racer(RACER1, (screen.get_width() / 2, screen.get_height() / 2))
+racers.add(racer)
 
 
-
-def generate_item():
-    if rd.random() > 0.99:
-        new_item = Item(ITEM_1, (rd.randint(0, WIDTH), rd.randint(0, HEIGHT)))
-        group1.add(new_item)
-
-
+# main game loop
 while running:
     # poll for events
-    # pg.QUIT event means the user clicked X to close your window
     for event in pg.event.get():
-        if event.type == pg.QUIT:
+        if event.type == pg.QUIT:  # pg.QUIT means window closed (ie. 'x' button)
             running = False
 
-    # call all `update` function for all sprites in the group
-    group1.update(dt)
+    # call `update` function for all sprites in the group(s)
+    track.update(dt)
+    racers.update(dt)
+
     # clears the screen by writing SURFACE_COLOR
     screen.fill(SURFACE_COLOR)
-    # draw every item in group1
-    group1.draw(screen)
+
+    # draw all items in the group(s)
+    track.draw(screen)
+    racers.draw(screen)
 
     # use `flip` to actually display all drawn elements to the screen
     pg.display.flip()
 
-    # randomly generate a new item at a random position
-    generate_item()
-
+    # limit game to 60 FPS and get delta time
     dt = clock.tick(60) / 1000
 
+# end of game
 pg.quit()
