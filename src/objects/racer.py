@@ -1,7 +1,7 @@
 import pygame as pg
 
 
-class Player(pg.sprite.Sprite):
+class Racer(pg.sprite.Sprite):
 
     # Constructor. Pass in the color of the block,
     # and its x and y position
